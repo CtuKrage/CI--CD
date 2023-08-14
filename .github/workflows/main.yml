@@ -35,4 +35,17 @@ jobs:
 
       - name: Send Notification on Failure
         if: ${{ failure() }}
-        run: echo "Build or deployment failed. Notify the team."
+        run: |
+          echo "Build or deployment failed. Notify the team."
+          # You can use GitHub's built-in 'create issue' action to create a notification issue
+          # This will automatically notify the team and allow tracking of the issue
+          - name: Create Issue
+            uses: actions/github-script@v4
+            with:
+              script: |
+                github.issues.create({
+                  repo: context.repo.repo,
+                  owner: context.repo.owner,
+                  title: 'CI/CD Failure Notification',
+                  body: 'The CI/CD pipeline has failed. Please investigate and take appropriate action.'
+                })
